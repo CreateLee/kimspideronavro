@@ -20,6 +20,7 @@ package kim.spider.protocol;
 //JDK imports
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class Content {
 
@@ -30,7 +31,7 @@ public final class Content {
 	public Content() {
 	}
 
-	public Content(String url, byte[] content) {
+	public Content(String url, byte[] content,Map<java.lang.CharSequence, java.util.List<java.lang.CharSequence>> metaData) {
 
 		if (url == null)
 			throw new IllegalArgumentException("null url");
@@ -43,6 +44,7 @@ public final class Content {
 				datum.content = java.nio.ByteBuffer.allocate(content.length);
 			datum.content.put(content);
 			datum.content.rewind();
+			this.setMetadata(metaData);
 		}
 	}
 
@@ -61,6 +63,7 @@ public final class Content {
 
 	public void setContent(byte[] content) {
 		datum.content.put(content);
+		datum.content.rewind();
 	}
 
 	public java.util.Map<java.lang.CharSequence, java.util.List<java.lang.CharSequence>> getMetadata() {
@@ -75,12 +78,7 @@ public final class Content {
 		datum.metaData = metaData;
 	}
 	
-	public void setExtend(
-			java.util.Map<java.lang.CharSequence, java.lang.CharSequence> extend) {
-		datum.extend = extend;
-	}
-
-	public static void main(String argv[]) throws Exception {
+		public static void main(String argv[]) throws Exception {
 
 	}
 
@@ -109,4 +107,23 @@ public final class Content {
 		else
 			return val.get(0).toString();
 	}
+	
+	public java.util.Map<java.lang.CharSequence,java.lang.CharSequence> getExtendData() {
+		if (datum.extend == null)
+			datum.extend = new java.util.HashMap<java.lang.CharSequence,java.lang.CharSequence>();
+		return datum.extend;
+	}
+	
+	public void setExtendData(java.util.Map<java.lang.CharSequence,java.lang.CharSequence> extend) {
+		datum.extend = extend;
+	}
+	
+	public void setExtend(String key,String value) {
+		getExtendData().put(key, value);
+	}
+	
+	public String getExtend(String key) {
+		return getExtendData().get(key).toString();
+	}
+	
 }

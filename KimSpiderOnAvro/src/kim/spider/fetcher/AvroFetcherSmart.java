@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kim.spider.avro.mapreduce.AvroJob;
-import kim.spider.avro.mapreduce.MultithreadedMapper;
-import kim.spider.avro.mapreduce.MultithreadedMapper.BlockMapper;
+import kim.spider.avro.mapreduce.MultithreadedBlockMapper;
+import kim.spider.avro.mapreduce.MultithreadedBlockMapper.BlockMapper;
 import kim.spider.avro.mapreduce.input.AvroPairInputFormat;
 import kim.spider.avro.mapreduce.output.AvroMapOutputFormat;
 import kim.spider.avro.mapreduce.output.AvroMultipleOutputs;
@@ -229,10 +229,10 @@ public class AvroFetcherSmart extends Configured implements Tool {
 				CrawlDatum.GENERATE_DIR_NAME));
 		job.setInputFormatClass(InputFormat.class);
 
-		job.setMapperClass(MultithreadedMapper.class);
+		job.setMapperClass(MultithreadedBlockMapper.class);
 		job.setReducerClass(MOReduce.class);
-		MultithreadedMapper.setMapperClass(job, FetchMapper.class);
-		MultithreadedMapper.setNumberOfThreads(job, threads);
+		MultithreadedBlockMapper.setMapperClass(job, FetchMapper.class);
+		MultithreadedBlockMapper.setNumberOfThreads(job, threads);
 
 		FileOutputFormat.setOutputPath(job, segment);
 		job.setMapOutputKeyClass(String.class);

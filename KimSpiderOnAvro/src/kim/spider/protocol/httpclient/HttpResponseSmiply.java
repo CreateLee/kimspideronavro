@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 
 import kim.spider.crawl.CrawlDatum;
 import kim.spider.metadata.Metadata;
@@ -46,7 +47,7 @@ public class HttpResponseSmiply implements Response {
 	private URL url;
 	private byte[] content;
 	private int code;
-	private Metadata headers = new SpellCheckedMetadata();
+	private SpellCheckedMetadata headers = new SpellCheckedMetadata();
 
 	/**
 	 * Fetches the given <code>url</code> and prepares HTTP response.
@@ -201,7 +202,7 @@ public class HttpResponseSmiply implements Response {
 		return headers.get(name);
 	}
 
-	public Metadata getHeaders() {
+	public HashMap<java.lang.CharSequence, java.util.List<java.lang.CharSequence>> getHeaders() {
 		return headers;
 	}
 

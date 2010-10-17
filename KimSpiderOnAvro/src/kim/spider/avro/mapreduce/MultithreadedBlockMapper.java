@@ -60,10 +60,10 @@ import org.apache.hadoop.util.ReflectionUtils;
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
-public class MultithreadedMapper<K1, V1, K2, V2> extends Mapper<K1, V1, K2, V2> {
+public class MultithreadedBlockMapper<K1, V1, K2, V2> extends Mapper<K1, V1, K2, V2> {
 
 	private static final Log															LOG					= LogFactory
-																																				.getLog(MultithreadedMapper.class);
+																																				.getLog(MultithreadedBlockMapper.class);
 	public static String																	NUM_THREADS	= "mapreduce.mapper.multithreadedmapper.threads";
 	public static String																	MAP_CLASS		= "mapreduce.mapper.multithreadedmapper.mapclass";
 
@@ -134,7 +134,7 @@ public class MultithreadedMapper<K1, V1, K2, V2> extends Mapper<K1, V1, K2, V2> 
 	 */
 	public static <K1, V1, K2, V2> void setMapperClass(Job job,
 			Class<? extends BlockMapper<K1, V1, K2, V2>> cls) {
-		if (MultithreadedMapper.class.isAssignableFrom(cls)) {
+		if (MultithreadedBlockMapper.class.isAssignableFrom(cls)) {
 			throw new IllegalArgumentException("Can't have recursive "
 					+ "MultithreadedMapper instances.");
 		}

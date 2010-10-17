@@ -131,7 +131,7 @@ public abstract class HttpBaseSimply implements Protocol {
 
 			int code = response.getCode();
 			byte[] content = response.getContent();
-			Content c = new Content(u.toString(),(content == null ? EMPTY_CONTENT : content));
+			Content c = new Content(u.toString(),(content == null ? EMPTY_CONTENT : content),response.getHeaders());
 
 			if (code == 200) { // got a good response
 				return new ProtocolOutput(c); // return it

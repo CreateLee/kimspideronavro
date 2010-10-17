@@ -35,26 +35,23 @@ public final class ParserFactory
 	{
 		try
 		{
-			String parse_class = content.extend
-					.get(Spider.PARSE_CLASS).toString();
+			String parse_class = content.getExtend(Spider.PARSE_CLASS).toString();
 			Class<?> tclass = Class.forName(parse_class);
 			return (Parse) tclass.newInstance();
 		} catch (ClassNotFoundException e)
 		{
 			LOG.info("IParserFactory.getParsers"
 					+ StringUtils.stringifyException(e));
-			return new DefaultlParse();
 		} catch (IllegalAccessException e)
 		{
 			LOG.info("IParserFactory.getParsers"
 					+ StringUtils.stringifyException(e));
-			return new DefaultlParse();
 		} catch (InstantiationException e)
 		{
 			LOG.info("IParserFactory.getParsers"
 					+ StringUtils.stringifyException(e));
-			return new DefaultlParse();
 		}
-
+		return null;
+		
 	}
 }

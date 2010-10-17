@@ -373,7 +373,7 @@ public class EncodingDetector {
 
     // make a fake Content
     Content content =
-        new Content("", "", data);
+        new Content("",  data);
 
     detector.autoDetectClues(content, true);
     String encoding = detector.guessEncoding(content,

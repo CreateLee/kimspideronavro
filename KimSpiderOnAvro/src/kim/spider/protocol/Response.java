@@ -40,7 +40,7 @@ public interface Response extends HttpHeaders {
   public String getHeader(String name);
 
   /** Returns all the headers. */
-  public Metadata getHeaders();
+  public java.util.Map<java.lang.CharSequence,java.util.List<java.lang.CharSequence>> getHeaders();
   
   /** Returns the full content of the response. */
   public byte[] getContent();

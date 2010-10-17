@@ -206,16 +206,22 @@ public class CrawlDatum implements  Cloneable {
 		datum.metaData = meta;
 	}
 	
+	public java.util.Map<java.lang.CharSequence,java.lang.CharSequence> getExtendData() {
+		if (datum.extend == null)
+			datum.extend = new java.util.HashMap<java.lang.CharSequence,java.lang.CharSequence>();
+		return datum.extend;
+	}
+	
 	public void setExtendData(java.util.Map<java.lang.CharSequence,java.lang.CharSequence> extend) {
 		datum.extend = extend;
 	}
 	
-	public void setMeta(String key,String value) {
-		getMetaData().put(key, value);
-	}
-	
 	public void setExtend(String key,String value) {
 		getExtendData().put(key, value);
+	}
+	
+	public void setMeta(String key,String value) {
+		getMetaData().put(key, value);
 	}
 	
 	/**
@@ -230,17 +236,20 @@ public class CrawlDatum implements  Cloneable {
 		}
 	}
 
+		
+	public void putAllExtendData(CrawlDatum other) {
+		for (Entry<java.lang.CharSequence,java.lang.CharSequence> e : other.getExtendData().entrySet()) {
+			getExtendData().put(e.getKey(), e.getValue());
+		}
+	}
+	
 	public java.util.Map<java.lang.CharSequence,java.lang.CharSequence> getMetaData() {
 		if (datum.metaData == null)
 			datum.metaData = new java.util.HashMap<java.lang.CharSequence,java.lang.CharSequence>();
 		return datum.metaData;
 	}
 	
-	public java.util.Map<java.lang.CharSequence,java.lang.CharSequence> getExtendData() {
-		if (datum.extend == null)
-			datum.extend = new java.util.HashMap<java.lang.CharSequence,java.lang.CharSequence>();
-		return datum.extend;
-	}
+	
 	
 	/** Copy the contents of another instance into datum instance. */
 	public void set(CrawlDatum that) {
@@ -257,6 +266,12 @@ public class CrawlDatum implements  Cloneable {
 		} else {
 			datum.metaData = null;
 		}
+		if(that.datum.extend != null)
+		{
+			this.putAllExtendData(that);
+		}
+		else
+			datum.extend = null;
 	}
 
 	public Object clone() {

@@ -700,7 +700,7 @@ public class MapAvroFile {
 	}
 
 	public static void main(String[] args) throws Exception {
-		String in = "D:/test/segments/20101014174055/content/-r-00000";
+		String in = "D:/test/crawldb/current/part-r-00000";
 	
 		//in = "in";
 		Configuration conf = new Configuration();
@@ -731,7 +731,7 @@ public class MapAvroFile {
 //		writer.close();
 		
 		System.out.println((System.currentTimeMillis() - start));
-		MapAvroFile.Reader<String,kim.spider.schema.Content> reader = new MapAvroFile.Reader<String,kim.spider.schema.Content>(fs, in, conf);
+		MapAvroFile.Reader reader = new MapAvroFile.Reader(fs, in, conf);
 		//MapAvroFile.Reader reader = new MapAvroFile.Reader(fs, in, conf);
 		start = System.currentTimeMillis();
 //		for (int i = 0; i < 100000; i++) {
