@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+<property>
+  <name>db.fetch.retry.max</name>
+  <value>3</value>
+  <description></description>
+</property>
+<property>
+  <name>mime.types.file</name>
+  <value>tika-mimetypes.xml</value>
+  <description>Name of file in CLASSPATH containing filename extension and
+  magic sequence to mime types mapping information</description>
+</property>
+<property>
+  <name>generate.update.crawldb</name>
+  <value>true</value>
+  <description></description>
+</property>
+
+<property>
+  <name>fetcher.threads.fetch</name>
+  <value>10</value>
+  <description></description>
+</property>
+
+<property>
+  <name>http.timeout</name>
+  <value>10000</value>
+  <description>The default network timeout, in milliseconds.</description>
+</property>
+
+<property>
+  <name>parser.character.encoding.default</name>
+  <value>utf-8</value>
+  <description>The character encoding to fall back to when no other information
+  is available</description>
+</property>
+
+<property>
+  <name>generate.count.per.segments</name>
+  <value>1000</value>
+  <description></description>
+</property>
+<property>
+  <name>io.skip.checksum.errors</name>
+  <value>true</value>
+  <description>If true, when a checksum error is encountered while
+  reading a sequence file, entries are skipped, instead of throwing an
+  exception.</description>
+</property>
+
+<property>
+  <name>http.useragent</name>
+  <value>Baiduspider+(+http://www.baidu.com/search/spider.htm)</value>
+  <description></description>
+</property>
+<property>
+  <name>crawl.gen.delay</name>
+  <value>604800000</value>
+  <description>
+   This value, expressed in days, defines how long we should keep the lock on records 
+   in CrawlDb that were just selected for fetching. If these records are not updated 
+   in the meantime, the lock is canceled, i.e. the become eligible for selecting. 
+   Default value of this is 7 days.
+  </description>
+</property>
+<property>
+  <name>generate.max.num.segments</name>
+  <value>100</value>
+  <description></description>
+</property>
+<property>
+  <name>http.content.limit</name>
+  <value>2097152</value>
+  <description></description>
+</property>
+
+</configuration>

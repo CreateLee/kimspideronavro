@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="avro"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="src" path="conf"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/ant-1.6.5.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/asm-3.2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/aspectjrt-1.6.5.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/aspectjtools-1.6.5.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/backport-util-concurrent.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/commons-el-1.0.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/commons-logging-api-1.1.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/commons-net-1.4.1.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/core-3.1.1.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/ftplet-api-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/ftpserver-core-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/ftpserver-deprecated-1.0.0-M2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/hsqldb-1.8.0.10.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jackson-core-asl-1.4.2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jackson-mapper-asl-1.4.2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jasper-compiler-5.5.12.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jasper-runtime-5.5.12.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jdiff-1.0.9.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jets3t-0.7.1.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jetty-6.1.14.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jetty-util-6.1.14.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jopt-simple-3.2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jsp-2.1-6.1.14.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/jsp-api-2.1-6.1.14.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/kfs-0.3.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/mina-core-2.0.0-M5.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/mockito-all-1.8.2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/netty-3.2.2.Final.jar" sourcepath="D:/source/avro-src-1.3.3/netty-3.2.2.Final/jar/netty-3.2.2.Final-sources.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/paranamer-2.2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/paranamer-ant-2.2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/paranamer-generator-2.2.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/qdox-1.10.1.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/servlet-api-2.5-6.1.14.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/slf4j-api-1.5.11.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/slf4j-log4j12-1.5.11.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/velocity-1.6.4-dep.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/velocity-1.6.4.jar"/>
+	<classpathentry kind="lib" path="/hadoop-0.21.0/lib/xmlenc-0.52.jar"/>
+	<classpathentry kind="lib" path="/kimspider1.2/lib/nekohtml.jar"/>
+	<classpathentry kind="lib" path="/kimspider1.2/lib/tagsoup-1.2.jar"/>
+	<classpathentry kind="lib" path="/kimspider1.2/lib/xml-apis.jar"/>
+	<classpathentry kind="lib" path="/kimspider1.2/lib/xercesImpl.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/avro"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-0.21.0"/>
+	<classpathentry kind="lib" path="/kimspider1.2/lib/icu4j-4_0_1.jar"/>
+	<classpathentry kind="output" path="build/eclipse-classes"/>
+</classpath>
