@@ -66,6 +66,7 @@ public class MultithreadedBlockMapper<K1, V1, K2, V2> extends Mapper<K1, V1, K2,
 																																				.getLog(MultithreadedBlockMapper.class);
 	public static String																	NUM_THREADS	= "mapreduce.mapper.multithreadedmapper.threads";
 	public static String																	MAP_CLASS		= "mapreduce.mapper.multithreadedmapper.mapclass";
+	public static String																	MAP_TASK_TIMEOUT		= "mapred.task.timeout";
 
 	private Class<? extends BlockMapper<K1, V1, K2, V2>>	mapClass;
 	private Context																				outer;
@@ -80,6 +81,17 @@ public class MultithreadedBlockMapper<K1, V1, K2, V2> extends Mapper<K1, V1, K2,
 	 */
 	public static int getNumberOfThreads(JobContext job) {
 		return job.getConfiguration().getInt(NUM_THREADS, 10);
+	}
+	
+	/**
+	 * The time of threads timeout.
+	 * 
+	 * @param job
+	 *          the job
+	 * @return the time out
+	 */
+	public static void setThreadTimeOut(JobContext job,int timeout) {
+		job.getConfiguration().setInt(MAP_TASK_TIMEOUT, timeout);
 	}
 
 	/**
@@ -163,7 +175,7 @@ public class MultithreadedBlockMapper<K1, V1, K2, V2> extends Mapper<K1, V1, K2,
 
 		// select a timeout that avoids a task timeout
 		long timeout = context.getConfiguration().getInt("mapred.task.timeout",
-				10 * 60 * 1000) / 2;
+				5 * 60 * 1000);
 	
 		int numblockthread = 0;
 		while (getActiveThread() > 0) {
