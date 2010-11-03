@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.HashMap;
 
 import kim.spider.crawl.CrawlDatum;
-import kim.spider.metadata.Metadata;
 import kim.spider.metadata.SpellCheckedMetadata;
 import kim.spider.protocol.HttpDateFormat;
 import kim.spider.protocol.Response;

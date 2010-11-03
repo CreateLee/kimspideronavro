@@ -1,9 +1,9 @@
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
+ * this.datum work for additional information regarding copyright ownership.
+ * The ASF licenses this.datum file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this.datum file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -24,51 +24,81 @@ import kim.spider.net.BasicURLNormalizer;
 import org.apache.avro.util.Utf8;
 
 /* An outgoing link from a page. */
-public class Outlink extends kim.spider.schema.Outlink {
-
+public class Outlink {
+	
+	public  kim.spider.schema.Outlink datum; 
 	// 赋予每个外链一个周期,默认1000分钟
 	public Outlink() {
+		datum = new kim.spider.schema.Outlink();
 	}
 
 	public Outlink(String toUrl, String anchor) throws MalformedURLException {
+		datum = new kim.spider.schema.Outlink();
 		if (toUrl == null)
 			toUrl = "";
-		this.url = new BasicURLNormalizer().normalize(toUrl);
+		this.datum.url = new BasicURLNormalizer().normalize(toUrl);
 		if (anchor == null)
 			anchor = "";
-		this.anchor = anchor;
+		this.datum.anchor = anchor;
 	}
 	
 	 public String getUrl() {
-			return url.toString();
+			return datum.url.toString();
 		}
 		public void setUrl(String url) {
-			this.url = new Utf8(url);
+			this.datum.url = new Utf8(url);
 		}
 		public String getAnchor() {
-			return anchor.toString();
+			return datum.anchor.toString();
 		}
 		public void setAnchor(String anchor) {
-			this.anchor = new Utf8(anchor);
+			this.datum.anchor = new Utf8(anchor);
 		}
 		public int getFetchInterval() {
-			return fetchInterval;
+			return datum.fetchInterval;
 		}
 		public void setFetchInterval(int fetchInterval) {
-			this.fetchInterval = fetchInterval;
+			this.datum.fetchInterval = fetchInterval;
 		}
 		public java.util.Map<java.lang.CharSequence, java.lang.CharSequence> getExtend() {
-			if(extend == null)
-				this.extend = new java.util.HashMap<java.lang.CharSequence, java.lang.CharSequence>();
-			return extend;
+			if(datum.extend == null)
+				this.datum.extend = new java.util.HashMap<java.lang.CharSequence, java.lang.CharSequence>();
+			return datum.extend;
 		}
 		public void setExtend(
 				java.util.Map<java.lang.CharSequence, java.lang.CharSequence> extend) {
-			this.extend = extend;
+			this.datum.extend = extend;
 		}
 		
 		public void addExtend(String name,String value)
 		{
 			this.getExtend().put(new Utf8(name), new Utf8(value));
+		}
+		
+		public String getExtend(String key) {
+			if (getExtend().get(key) != null)
+				return getExtend().get(key).toString();
+			else
+				return null;
+		}
+		
+		@Override
+		public boolean equals(Object o)
+		{
+			if(o instanceof Outlink)
+			{
+				if(this.datum.url != null && this.datum.url.equals(((Outlink)o).datum.url))
+						return true;
+				else
+					return false;
+			}
+			else
+				return false;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return datum.toString();
 		}
 }

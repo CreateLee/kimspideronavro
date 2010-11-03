@@ -115,7 +115,6 @@ public class GenericAvroData extends SpecificRecordBase implements
 		Class<?>[] clazzes = conf.getClasses(GENERIC_AVRO_CLASS, (Class<?>[]) null);
 		if (clazzes != null) {
 			for (Class<?> clazz : clazzes) {
-				Log.info("(**&*&&&&&" + clazz.getName());
 				ash.add(ReflectData.get().getSchema(clazz));
 			}
 		}

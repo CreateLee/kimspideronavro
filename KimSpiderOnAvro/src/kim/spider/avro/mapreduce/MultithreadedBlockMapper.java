@@ -41,23 +41,6 @@ import org.apache.hadoop.mapreduce.lib.map.WrappedMapper;
 import org.apache.hadoop.mapreduce.task.MapContextImpl;
 import org.apache.hadoop.util.ReflectionUtils;
 
-/**
- * Multithreaded implementation for @link org.apache.hadoop.mapreduce.Mapper.
- * <p>
- * It can be used instead of the default implementation,
- * 
- * @link org.apache.hadoop.mapred.MapRunner, when the Map operation is not CPU
- *       bound in order to improve throughput.
- *       <p>
- *       Mapper implementations using this MapRunnable must be thread-safe.
- *       <p>
- *       The Map-Reduce job has to be configured with the mapper to use via
- *       {@link #setMapperClass(Configuration, Class)} and the number of thread
- *       the thread-pool can use with the
- *       {@link #getNumberOfThreads(Configuration) method. The default value is
- *       10 threads.
- *       <p>
- */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class MultithreadedBlockMapper<K1, V1, K2, V2> extends Mapper<K1, V1, K2, V2> {
@@ -183,8 +166,8 @@ public class MultithreadedBlockMapper<K1, V1, K2, V2> extends Mapper<K1, V1, K2,
 				MapRunner thread = runners.get(i);
 				if (thread.isAlive()) {
 					if (thread.mapper.getBlockTime() > timeout) {
-						thread.interrupt();// ÖÕÖ¹µ±Ç°Ïß³Ì
-						thread.mapper.BlockRecord();// ´¦Àí×èÈûÊý¾Ý
+						thread.interrupt();// ï¿½ï¿½Ö¹ï¿½ï¿½Ç°ï¿½ß³ï¿½
+						thread.mapper.BlockRecord();// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						numblockthread ++;
 						break;
 					}

@@ -18,13 +18,15 @@
 package kim.spider.parse;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.List;
 
-import kim.spider.io.WritableList;
+import kim.spider.avro.mapreduce.AvroJob;
+import kim.spider.avro.mapreduce.input.AvroPairInputFormat;
+import kim.spider.avro.mapreduce.output.ParseOutputFormat;
+import kim.spider.io.SpiderData;
 import kim.spider.metadata.Spider;
 import kim.spider.protocol.Content;
 import kim.spider.util.SpiderConfiguration;
-import kim.spider.util.SpiderJob;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,25 +35,18 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.FileInputFormat;
-import org.apache.hadoop.mapred.FileOutputFormat;
-import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.Mapper;
-import org.apache.hadoop.mapred.OutputCollector;
-import org.apache.hadoop.mapred.Reducer;
-import org.apache.hadoop.mapred.Reporter;
-import org.apache.hadoop.mapred.SequenceFileInputFormat;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.htmlcleaner.HtmlCleaner;
 
 /* Parse content in a segment. */
-public class ParseSegment extends Configured implements Tool,
-		Mapper<Text, Content, Text, WritableList>,
-		Reducer<Text, WritableList, Text, WritableList> {
-
+public class ParseSegment extends Configured implements Tool
+{
 	public static final Log LOG = LogFactory.getLog(ParseSegment.class);
 
 	public ParseSegment() {
@@ -69,48 +64,51 @@ public class ParseSegment extends Configured implements Tool,
 	public void close() {
 	}
 
-	private Text newKey = new Text();
-
-	public void map(Text key, Content content,
-			OutputCollector<Text, WritableList> output, Reporter reporter)
-			throws IOException {
-		Text url = (Text) key;
-		Parse parse = new ParserFactory().getParsers(url.toString(), content);
-		WritableList pd = parse.parse(url.toString(), content);
-		output.collect(key, pd);
+	public static class ParseMapper extends Mapper<String,kim.spider.schema.Content,String,SpiderData>
+	{
+		@Override
+		protected void map(String key, kim.spider.schema.Content value, 
+        Context context) throws IOException, InterruptedException {
+			Content content = new Content(value);
+			Parse parse = new ParserFactory().getParsers(key, new Content(value));
+			List pd = parse.parse(key.toString(), content);
+			for(Object o : pd)
+			{
+				if(o instanceof Outlink)
+				{
+					((Outlink) o).setExtend(content.getExtendData());
+					context.write(key, new SpiderData(((Outlink) o).datum));
+				}
+				else
+					context.write(key, new SpiderData(o));
+			}
+		}
+	
 	}
-
-	public void reduce(Text key, Iterator<WritableList> values,
-			OutputCollector<Text, WritableList> output, Reporter reporter)
-			throws IOException {
-		output.collect(key, (WritableList) values.next()); // collect first
-															// value
-	}
-
-	public void parse(Path segment) throws IOException {
+	
+	
+	public void parse(Path segment) throws IOException, InterruptedException, ClassNotFoundException {
 
 		if (LOG.isInfoEnabled()) {
 			LOG.info("Parse: starting");
 			LOG.info("Parse: segment: " + segment);
 		}
 
-		JobConf job = new SpiderJob(getConf());
+		Job job = AvroJob.getAvroJob(getConf());
 		job.setJobName("parse " + segment);
 
 		FileInputFormat.addInputPath(job, new Path(segment, Content.DIR_NAME));
-		job.set(Spider.SEGMENT_NAME_KEY, segment.getName());
-		//起点小说使用了HtmlCleaner
-		job.setJarByClass(HtmlCleaner.class);
-		job.setInputFormat(SequenceFileInputFormat.class);
-		job.setMapperClass(ParseSegment.class);
-		job.setReducerClass(ParseSegment.class);
-
+		job.getConfiguration().set(Spider.SEGMENT_NAME_KEY, segment.getName());
+		
+		job.setInputFormatClass(AvroPairInputFormat.class);
+		job.setMapperClass(ParseMapper.class);
+		
 		FileOutputFormat.setOutputPath(job, segment);
-		job.setOutputFormat(ParseOutputFormat.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(WritableList.class);
+		job.setOutputFormatClass(ParseOutputFormat.class);
+		job.setOutputKeyClass(String.class);
+		job.setOutputValueClass(SpiderData.class);
 
-		JobClient.runJob(job);
+		job.waitForCompletion(true);
 		if (LOG.isInfoEnabled()) {
 			LOG.info("Parse: done");
 		}

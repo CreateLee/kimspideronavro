@@ -56,12 +56,6 @@ import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-/*
- * 试用与对网站进行敏捷抓取，无任何设置的多线程并发快速访问网页
- * 只抓取有generatored标识的segment
- * 此抓取任务针对一个segments目录只允许启动一个任务（一个任务已经是分布式抓取）
- * 注：segments是包含segment的目录 
- */
 /** The fetcher. Most of the work is done by plugins. */
 public class AvroFetcherSmart extends Configured implements Tool {
 
@@ -182,8 +176,7 @@ public class AvroFetcherSmart extends Configured implements Tool {
 				// add segment to metadata
 				content.addMetadata(Spider.SEGMENT_NAME_KEY, segmentName);
 				content.addMetadata(Spider.FETCH_STATUS_KEY, Integer.toString(status));
-				// 继承对应url的metadata，可以在parse中使用
-				content.setExtend(datum.getExtendData());
+				content.setExtendData(datum.getExtendData());
 			}
 
 			try {
@@ -264,7 +257,7 @@ public class AvroFetcherSmart extends Configured implements Tool {
 				throws IOException, InterruptedException {
 			for (GenericAvroData value : values) {
 				if (value.datum instanceof kim.spider.schema.CrawlDatum) {
-					mos.write(key, value.datum, CrawlDatum.FETCH_DIR_NAME+"/");
+					mos.write(key, value.datum, CrawlDatum.FETCH_DIR_NAME+"/","");
 				} else if (value.datum instanceof kim.spider.schema.Content) {
 					mos.write(CONTENT_REDIR, key, value.datum, CONTENT_REDIR+"/");
 				}

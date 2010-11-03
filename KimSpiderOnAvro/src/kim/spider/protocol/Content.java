@@ -47,7 +47,11 @@ public final class Content {
 			this.setMetadata(metaData);
 		}
 	}
-
+	
+	public Content(kim.spider.schema.Content content)
+	{
+		this.datum = content;
+	}
 	/** The url fetched. */
 	public String getUrl() {
 		return datum.url.toString();

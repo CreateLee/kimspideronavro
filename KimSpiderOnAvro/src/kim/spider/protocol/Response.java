@@ -20,7 +20,6 @@ package kim.spider.protocol;
 import java.net.URL;
 
 import kim.spider.metadata.HttpHeaders;
-import kim.spider.metadata.Metadata;
 
 // Nutch imports
 

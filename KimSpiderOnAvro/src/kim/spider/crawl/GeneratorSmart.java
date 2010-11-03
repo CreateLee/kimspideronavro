@@ -55,7 +55,7 @@ import org.apache.hadoop.util.ToolRunner;
  * (OldGenerator), the IP resolution is done ONLY on the entries which have been
  * selected for fetching. The URLs are partitioned by IP, domain or host within
  * a segment. We can chose separately how to count the URLS i.e. by domain or
- * host to limit the entries. ÊÊÓÃ´¹Ö±×¥È¡ÍøÕ¾ÊıÁ¿½ÏÉÙ£¬ÅäºÏ@FetcherSmart¿ÉÒÔÊµÏÖ¶Ôµ¥Ò»ÍøÕ¾µÄ·Ö²¼Ê½×¥È¡
+ * host to limit the entries.
  **/
 public class GeneratorSmart extends Configured implements Tool {
 
@@ -82,8 +82,6 @@ public class GeneratorSmart extends Configured implements Tool {
 
 		private SelectorEntry	entry		= new SelectorEntry();
 		private long					genDelay;
-
-		// 1;//µ¥´Î×¥È¡Éú³ÉsegmentµÄÊıÁ¿£¬´¹Ö±×¥È¡È¡Ïû´Ë²ÎÊı£¬Ä¬ÈÏÈ«²¿´ı×¥È¡¶¼Éú³Éµ½ÈÎÎñÖĞ£¬±£Ö¤×¥È¡×î¿ìËÙÃô½İ
 
 		@Override
 		protected void setup(Context context) throws IOException,
@@ -127,7 +125,7 @@ public class GeneratorSmart extends Configured implements Tool {
 			entry.datum = crawlDatum.datum;
 			entry.url = key;
 			/*
-			 * ÊäÈëÊı¾İÊÇ°´urlÅÅĞòµÄ£¬´Ë´¦Ê¹ÓÃËæ»úÊı¶ÔÊı¾İ½øĞĞ´òÂÒ Ó°ÏìÊı¾İÔÚReduce¹ı³ÌÖĞµÄÅÅĞò£¬´ïµ½¶à¸öÕ¾µãurl¾ùÔÈ·Ö²¼µÄÄ¿µÄ
+			 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½urlï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ë´ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ½ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Reduceï¿½ï¿½ï¿½ï¿½Ğµï¿½ï¿½ï¿½ï¿½ò£¬´ïµ½ï¿½ï¿½ï¿½Õ¾ï¿½ï¿½urlï¿½ï¿½ï¿½È·Ö²ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½
 			 */
 			context.write(RandomUtils.nextFloat(), entry);
 		}
@@ -136,7 +134,7 @@ public class GeneratorSmart extends Configured implements Tool {
 	public static class SelectorReducer extends
 			Reducer<Float, SelectorEntry, Float, SelectorEntry> {
 		private long																			count							= 0;
-		private long																			limit;									// µ¥¸ösegmentµÄurlÅä¶î
+		private long																			limit;									// ï¿½ï¿½ï¿½ï¿½segmentï¿½ï¿½urlï¿½ï¿½ï¿½
 		int																								currentsegmentnum	= 1;
 		//private AvroMultipleOutputs<Float, SelectorEntry>	mos;
 
@@ -348,7 +346,7 @@ public class GeneratorSmart extends Configured implements Tool {
 					continue;
 				// start a new partition job for this segment
 				Path newSeg = partitionSegment(fs, segments, subfetchlist, numLists);
-				// ÔÚnewSegÄ¿Â¼ÏÂÉú³Égeneratored±êÊ¾µ±Ç°segmentÉú³ÉÍê³É,fetch¿ÉÒÔ½øĞĞ×¥È¡
+				// ï¿½ï¿½newSegÄ¿Â¼ï¿½ï¿½ï¿½ï¿½ï¿½generatoredï¿½ï¿½Ê¾ï¿½ï¿½Ç°segmentï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,fetchï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½×¥È¡
 				fs.createNewFile(new Path(newSeg, "generatored"));
 				generatedSegments.add(newSeg);
 			}

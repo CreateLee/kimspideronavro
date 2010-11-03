@@ -31,12 +31,11 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.util.PriorityQueue;
 
 /** Merge new page entries with existing entries. */
-public class CrawlDbReducer extends Reducer<String, CrawlDatum, String, CrawlDatum> {
+public class CrawlDbReducer extends Reducer<String, kim.spider.schema.CrawlDatum, String, kim.spider.schema.CrawlDatum> {
 	public static final Log			LOG			= LogFactory.getLog(CrawlDbReducer.class);
 
 	private int									retryMax;
 	private CrawlDatum					result	= new CrawlDatum();
-	private InlinkPriorityQueue	linked	= null;
 	private boolean							additionsAllowed;
 	private int									maxInterval;
 	private FetchSchedule				schedule;
@@ -53,37 +52,27 @@ public class CrawlDbReducer extends Reducer<String, CrawlDatum, String, CrawlDat
 			maxInterval = oldMaxInterval * FetchSchedule.SECONDS_PER_DAY;
 		schedule = FetchScheduleFactory.getFetchSchedule(job);
 		int maxLinks = job.getInt("db.update.max.inlinks", 10000);
-		linked = new InlinkPriorityQueue(maxLinks);
 	}
-
+	private ArrayList<CrawlDatum> linked = new ArrayList<CrawlDatum>();
 	@Override
-	protected void reduce(String key, Iterable<CrawlDatum> values, Context context)
+	protected void reduce(String key, Iterable<kim.spider.schema.CrawlDatum> values, Context context)
 			throws IOException, InterruptedException {
-		CrawlDatum fetch = new CrawlDatum();
-		CrawlDatum old = new CrawlDatum();
-
-		boolean fetchSet = false;
-		boolean oldSet = false;
-		byte[] signature = null;
-		boolean multiple = false; // avoid deep copy when only single value
-		// exists
+		CrawlDatum fetch = null;
+		CrawlDatum old = null;
+		CrawlDatum gen = null;
 		linked.clear();
-		java.util.Map<java.lang.CharSequence, java.lang.CharSequence> metaFromParse = null;
 
-		while (values.iterator().hasNext()) {
-			CrawlDatum datum = values.iterator().next();
-			if (!multiple && values.iterator().hasNext())
-				multiple = true;
-			if (CrawlDatum.hasDbStatus(datum)) {
-				if (!oldSet) {
-					if (multiple) {
-						old.set(datum);
-					} else {
-						// no need for a deep copy - this is the only value
-						old = datum;
-					}
-					oldSet = true;
-				} else {
+		while (values.iterator().hasNext())
+		{
+			CrawlDatum datum = new CrawlDatum(values.iterator().next());
+			if (CrawlDatum.hasDbStatus(datum))
+			{
+				if (old == null)
+				{
+					old = new CrawlDatum();
+					old.set(datum);
+				} else
+				{
 					// always take the latest version
 					if (old.getFetchTime() < datum.getFetchTime())
 						old.set(datum);
@@ -91,217 +80,114 @@ public class CrawlDbReducer extends Reducer<String, CrawlDatum, String, CrawlDat
 				continue;
 			}
 
-			if (CrawlDatum.hasFetchStatus(datum)) {
-				if (!fetchSet) {
-					if (multiple) {
-						fetch.set(datum);
-					} else {
-						fetch = datum;
-					}
-					fetchSet = true;
-				} else {
-					// always take the latest version
+			if (CrawlDatum.hasFetchStatus(datum))
+			{
+				if (fetch == null)
+				{
+					fetch = new CrawlDatum();
+					fetch.set(datum);
+				} else
+				{
 					if (fetch.getFetchTime() < datum.getFetchTime())
 						fetch.set(datum);
 				}
 				continue;
 			}
-
-			switch (datum.getStatus()) { // collect other info
-			case CrawlDatum.STATUS_LINKED:
-				CrawlDatum link;
-				if (multiple) {
-					link = new CrawlDatum();
-					link.set(datum);
-				} else {
-					link = datum;
-				}
-				linked.insert(link);
-				break;
-			case CrawlDatum.STATUS_SIGNATURE:
-				signature = datum.getSignature();
-				break;
-			case CrawlDatum.STATUS_PARSE_META:
-				metaFromParse = datum.getMetaData();
-				break;
-			default:
-				LOG.warn("Unknown status, key: " + key + ", datum: " + datum);
-			}
+			if (datum.getStatus() == CrawlDatum.STATUS_LINKED)
+				linked.add(datum);
+//			if(datum.getStatus() == CrawlDatum.STATUS_GENERATER)
+//			{
+//				if(gen == null)
+//					gen = datum; 
+//			}
 		}
 
-		// copy the content of the queue into a List
-		// in reversed order
-		int numLinks = linked.size();
-		List<CrawlDatum> linkList = new ArrayList<CrawlDatum>(numLinks);
-		for (int i = numLinks - 1; i >= 0; i--) {
-			linkList.add(linked.pop());
+		if (fetch==null && linked.size() > 0)
+		{
+			fetch = (CrawlDatum) linked.get(0);
 		}
-
-		// if it doesn't already exist, skip it
-		if (!oldSet && !additionsAllowed)
-			return;
-
-		// if there is no fetched datum, perhaps there is a link
-		if (!fetchSet && linkList.size() > 0) {
-			fetch = linkList.get(0);
-			fetchSet = true;
-		}
-
 		// still no new data - record only unchanged old data, if exists, and
 		// return
-		if (!fetchSet) {
-			if (oldSet) {// at this point at least "old" should be present
-				context.write(key, old);
-			} else {
-				LOG.warn("Missing fetch and old value, signature=" + signature);
+		if (fetch == null)
+		{
+			if (old != null && gen != null) // at this point at least "old" should be
+			{
+				old.getMetaData().remove(Spider.GENERATE_TIME_KEY);
+				context.write(key, old.datum);
+			}
+			else if(old != null)
+			{
+				context.write(key, old.datum);
 			}
 			return;
 		}
-
-		if (signature == null)
-			signature = fetch.getSignature();
-		long prevModifiedTime = oldSet ? old.getModifiedTime() : 0L;
-		long prevFetchTime = oldSet ? old.getFetchTime() : 0L;
-
+		
 		// initialize with the latest version, be it fetch or link
 		result.set(fetch);
-		if (oldSet) {
+		if (old != null)
+		{
 			// copy metadata from old, if exists
-			if (old.getMetaData().size() > 0) {
-				result.putAllMetaData(old);
+			if (old.getMetaData().size() > 0)
+			{
+				result.getMetaData().putAll(old.getMetaData());
 				// overlay with new, if any
 				if (fetch.getMetaData().size() > 0)
-					result.putAllMetaData(fetch);
+					result.getMetaData().putAll(fetch.getMetaData());
 			}
 			// set the most recent valid value of modifiedTime
-			if (old.getModifiedTime() > 0 && fetch.getModifiedTime() == 0) {
+			if (old.getModifiedTime() > 0 && fetch.getModifiedTime() == 0)
+			{
 				result.setModifiedTime(old.getModifiedTime());
 			}
 		}
 
-		switch (fetch.getStatus()) { // determine new status
+		switch (fetch.getStatus())
+		{ // 指定新的状态
 
-		case CrawlDatum.STATUS_LINKED: // it was link
-			if (oldSet) { // if old exists
-				result.set(old); // use it
-			} else {
-				result = schedule.initializeSchedule(key.toString(), result);
-				result.setStatus(CrawlDatum.STATUS_DB_UNFETCHED);
-				result.setScore(0.0f);
-			}
-			break;
+			case CrawlDatum.STATUS_FETCH_SUCCESS: // 抓取成功
 
-		case CrawlDatum.STATUS_FETCH_SUCCESS: // succesful fetch
-		case CrawlDatum.STATUS_FETCH_REDIR_TEMP: // successful fetch, redirected
-		case CrawlDatum.STATUS_FETCH_REDIR_PERM:
-		case CrawlDatum.STATUS_FETCH_NOTMODIFIED: // successful fetch,
-			// notmodified
-			// determine the modification status
-			int modified = FetchSchedule.STATUS_UNKNOWN;
-			if (fetch.getStatus() == CrawlDatum.STATUS_FETCH_NOTMODIFIED) {
-				modified = FetchSchedule.STATUS_NOTMODIFIED;
-			} else {
-				if (oldSet && old.getSignature() != null && signature != null) {
-					if (SignatureComparator._compare(old.getSignature(), signature) != 0) {
-						modified = FetchSchedule.STATUS_MODIFIED;
-					} else {
-						modified = FetchSchedule.STATUS_NOTMODIFIED;
-					}
+				result.setStatus(CrawlDatum.STATUS_DB_FETCHED);
+				//result.setNextFetchTime();// 指定下次抓取时间
+				break;
+
+			case CrawlDatum.STATUS_FETCH_REDIR_TEMP:
+				result.setStatus(CrawlDatum.STATUS_DB_REDIR_TEMP);
+				//result.setNextFetchTime();
+				break;
+			case CrawlDatum.STATUS_FETCH_REDIR_PERM:
+				result.setStatus(CrawlDatum.STATUS_DB_REDIR_PERM);
+				//result.setNextFetchTime();
+				break;
+			case CrawlDatum.STATUS_FETCH_RETRY: // 临时错误
+				if (fetch.getRetriesSinceFetch() < retryMax)
+				{
+					result.setStatus(CrawlDatum.STATUS_DB_UNFETCHED);
+				} else
+				{
+					result.setStatus(CrawlDatum.STATUS_DB_GONE);
 				}
-			}
-			// set the schedule
-			result = schedule.setFetchSchedule(key.toString(), result, prevFetchTime,
-					prevModifiedTime, fetch.getFetchTime(), fetch.getModifiedTime(),
-					modified);
-			// set the result status and signature
-			if (modified == FetchSchedule.STATUS_NOTMODIFIED) {
-				result.setStatus(CrawlDatum.STATUS_DB_NOTMODIFIED);
-				if (oldSet)
-					result.setSignature(old.getSignature());
-			} else {
-				switch (fetch.getStatus()) {
-				case CrawlDatum.STATUS_FETCH_SUCCESS:
-					result.setStatus(CrawlDatum.STATUS_DB_FETCHED);
-					break;
-				case CrawlDatum.STATUS_FETCH_REDIR_PERM:
-					result.setStatus(CrawlDatum.STATUS_DB_REDIR_PERM);
-					break;
-				case CrawlDatum.STATUS_FETCH_REDIR_TEMP:
-					result.setStatus(CrawlDatum.STATUS_DB_REDIR_TEMP);
-					break;
-				default:
-					LOG.warn("Unexpected status: " + fetch.getStatus()
-							+ " resetting to old status.");
-					if (oldSet)
-						result.setStatus(old.getStatus());
-					else
-						result.setStatus(CrawlDatum.STATUS_DB_UNFETCHED);
+				break;
+			case CrawlDatum.STATUS_LINKED: // 新发现的链接
+				if (old != null)
+				{ // if old exists
+					result.set(old); // use it
+				} else
+				{
+					result.setStatus(CrawlDatum.STATUS_DB_UNFETCHED);
 				}
-				result.setSignature(signature);
-				if (metaFromParse != null) {
-					for (Entry<java.lang.CharSequence, java.lang.CharSequence> e : metaFromParse
-							.entrySet()) {
-						result.getMetaData().put(e.getKey(), e.getValue());
-					}
-				}
-			}
-			// if fetchInterval is larger than the system-wide maximum, trigger
-			// an unconditional recrawl. This prevents the page to be stuck at
-			// NOTMODIFIED state, when the old fetched copy was already removed
-			// with
-			// old segments.
-			if (maxInterval < result.getFetchInterval())
-				result = schedule.forceRefetch(key.toString(), result, false);
-			break;
-		case CrawlDatum.STATUS_SIGNATURE:
-			if (LOG.isWarnEnabled()) {
-				LOG.warn("Lone CrawlDatum.STATUS_SIGNATURE: " + key);
-			}
-			return;
-		case CrawlDatum.STATUS_FETCH_RETRY: // temporary failure
-			if (oldSet) {
-				result.setSignature(old.getSignature()); // use old signature
-			}
-			result = schedule.setPageRetrySchedule(key.toString(), result,
-					prevFetchTime, prevModifiedTime, fetch.getFetchTime());
-			if (result.getRetriesSinceFetch() < retryMax) {
-				result.setStatus(CrawlDatum.STATUS_DB_UNFETCHED);
-			} else {
+				break;
+			case CrawlDatum.STATUS_FETCH_GONE: // 永久错误
 				result.setStatus(CrawlDatum.STATUS_DB_GONE);
-			}
-			break;
+				break;
 
-		case CrawlDatum.STATUS_FETCH_GONE: // permanent failure
-			if (oldSet)
-				result.setSignature(old.getSignature()); // use old signature
-			result.setStatus(CrawlDatum.STATUS_DB_GONE);
-			result = schedule.setPageGoneSchedule(key.toString(), result,
-					prevFetchTime, prevModifiedTime, fetch.getFetchTime());
-			break;
-
-		default:
-			throw new RuntimeException("Unknown status: " + fetch.getStatus() + " "
-					+ key);
+			default:
+				throw new RuntimeException("Unknown status: "
+						+ fetch.getStatus() + " " + key);
 		}
 
-		// remove generation time, if any
+		// 去调被genrate的时间
 		result.getMetaData().remove(Spider.GENERATE_TIME_KEY);
-		context.write(key, result);
-	}
-
-}
-
-class InlinkPriorityQueue extends PriorityQueue<CrawlDatum> {
-
-	public InlinkPriorityQueue(int maxSize) {
-		initialize(maxSize);
-	}
-
-	/** Determines the ordering of objects in this priority queue. **/
-	protected boolean lessThan(Object arg0, Object arg1) {
-		CrawlDatum candidate = (CrawlDatum) arg0;
-		CrawlDatum least = (CrawlDatum) arg1;
-		return candidate.getScore() > least.getScore();
+		context.write(key, result.datum);
 	}
 
 }

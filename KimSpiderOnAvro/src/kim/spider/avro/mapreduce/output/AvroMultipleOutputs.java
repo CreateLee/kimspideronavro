@@ -40,88 +40,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 import org.apache.hadoop.util.ReflectionUtils;
 
-/**
- * The MultipleOutputs class simplifies writing output data to multiple outputs
- * 
- * <p>
- * Case one: writing to additional outputs other than the job default output.
- * 
- * Each additional output, or named output, may be configured with its own
- * <code>OutputFormat</code>, with its own key class and with its own value
- * class.
- * 
- * <p>
- * Case two: to write data to different files provided by user
- * </p>
- * 
- * <p>
- * MultipleOutputs supports counters, by default they are disabled. The counters
- * group is the {@link AvroMultipleOutputs} class name. The names of the
- * counters are the same as the output name. These count the number records
- * written to each output name.
- * </p>
- * 
- * Usage pattern for job submission:
- * 
- * <pre>
- * 
- * Job job = new Job();
- * 
- * FileInputFormat.setInputPath(job, inDir);
- * FileOutputFormat.setOutputPath(job, outDir);
- * 
- * job.setMapperClass(MOMap.class);
- * job.setReducerClass(MOReduce.class);
- * ...
- * 
- * // Defines additional single text based output 'text' for the job
- * MultipleOutputs.addNamedOutput(job, "text", TextOutputFormat.class,
- * LongWritable.class, Text.class);
- * 
- * // Defines additional sequence-file based output 'sequence' for the job
- * MultipleOutputs.addNamedOutput(job, "seq",
- *   SequenceFileOutputFormat.class,
- *   LongWritable.class, Text.class);
- * ...
- * 
- * job.waitForCompletion(true);
- * ...
- * </pre>
- * <p>
- * Usage in Reducer:
- * 
- * <pre>
- * <K, V> String generateFileName(K k, V v) {
- *   return k.toString() + "_" + v.toString();
- * }
- * 
- * public class MOReduce extends
- *   Reducer&lt;WritableComparable, Writable,WritableComparable, Writable&gt; {
- * private MultipleOutputs mos;
- * public void setup(Context context) {
- * ...
- * mos = new MultipleOutputs(context);
- * }
- * 
- * public void reduce(WritableComparable key, Iterator&lt;Writable&gt; values,
- * Context context)
- * throws IOException {
- * ...
- * mos.write("text", , key, new Text("Hello"));
- * mos.write("seq", LongWritable(1), new Text("Bye"), "seq_a");
- * mos.write("seq", LongWritable(2), key, new Text("Chau"), "seq_b");
- * mos.write(key, new Text("value"), generateFileName(key, new Text("value")));
- * ...
- * }
- * 
- * public void cleanup(Context) throws IOException {
- * mos.close();
- * ...
- * }
- * 
- * }
- * </pre>
- */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
 public class AvroMultipleOutputs<K, V>{
@@ -340,7 +258,7 @@ public class AvroMultipleOutputs<K, V>{
 		// If not in cache, create a new one
 		if (writer == null) {
 			// get the record writer from context output format
-			FileOutputFormat.setOutputName(taskContext, baseFileName);
+			taskContext.getConfiguration().set("mapreduce.output.basename", baseFileName);
 			try {
 				writer = ((OutputFormat) ReflectionUtils.newInstance(
 						taskContext.getOutputFormatClass(), taskContext.getConfiguration()))

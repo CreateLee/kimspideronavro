@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import kim.spider.avro.mapreduce.AvroJob;
+import kim.spider.avro.mapreduce.input.AvroPairInputFormat;
 import kim.spider.avro.mapreduce.output.AvroMapOutputFormat;
 import kim.spider.util.HadoopFSUtil;
 import kim.spider.util.LockUtil;
@@ -142,15 +143,15 @@ public class CrawlDb extends Configured implements Tool {
 		if (FileSystem.get(config).exists(current)) {
 			FileInputFormat.addInputPath(job, current);
 		}
-		job.setInputFormatClass(InputFormat.class);
+		job.setInputFormatClass(AvroPairInputFormat.class);
 
 		job.setMapperClass(CrawlDbFilter.class);
 		job.setReducerClass(CrawlDbReducer.class);
 
 		FileOutputFormat.setOutputPath(job, newCrawlDb);
 		job.setOutputFormatClass(AvroMapOutputFormat.class);
-		job.setOutputKeyClass(Utf8.class);
-		job.setOutputValueClass(CrawlDatum.class);
+		job.setOutputKeyClass(String.class);
+		job.setOutputValueClass(kim.spider.schema.CrawlDatum.class);
 
 		return job;
 	}

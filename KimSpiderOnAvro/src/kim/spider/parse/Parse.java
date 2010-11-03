@@ -17,10 +17,11 @@
 
 package kim.spider.parse;
 
-import kim.spider.io.WritableList;
+import java.util.List;
+
 import kim.spider.protocol.Content;
 
 public interface Parse
 {
-	public WritableList parse(String url, Content content);
+	public List<Object> parse(String url, Content content);
 }

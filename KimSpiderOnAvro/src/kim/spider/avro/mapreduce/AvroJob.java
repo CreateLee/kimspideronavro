@@ -38,7 +38,7 @@ public class AvroJob {
 		 job.setSortComparatorClass(AvroKeyComparator.class);
 		 job.getConfiguration().setStrings("io.serializations", 
 		      new String[]{WritableSerialization.class.getName(), 
-		        AvroSpecificSerialization.class.getName(), 
+		        //AvroSpecificSerialization.class.getName(), 
 		        AvroReflectSerialization.class.getName()});
 		 return job;
 	}

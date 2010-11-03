@@ -68,6 +68,7 @@ public class AvroReflectSerialization extends AvroSerialization<Object> {
 		} catch (AvroTypeException e) {
 			bacept = false;
 		}
+		
 		if(bacept)
 			return true;
 		return AvroReflectSerializable.class.isAssignableFrom(c)

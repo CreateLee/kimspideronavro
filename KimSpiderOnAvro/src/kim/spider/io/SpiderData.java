@@ -18,6 +18,8 @@ package kim.spider.io;
 
 import java.util.ArrayList;
 
+import mobile.iphone.app.parse.IPhoneParse.AppInfo;
+
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.reflect.ReflectData;
@@ -28,11 +30,11 @@ import org.apache.hadoop.conf.Configurable;
 
 public class SpiderData extends SpecificRecordBase implements SpecificRecord {
 	
-	public Object								datum;
+	public Object			datum;
 	public final static Schema				SCHEMA$  = initSchema();
 	
 	@Union(value = { kim.spider.schema.CrawlDatum.class,
-			kim.spider.schema.Content.class, kim.spider.schema.Outlink.class })
+			kim.spider.schema.Content.class, kim.spider.schema.Outlink.class ,AppInfo.class})
 	class SpiderUnion {
 	
 	}

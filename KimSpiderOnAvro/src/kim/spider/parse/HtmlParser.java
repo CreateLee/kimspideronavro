@@ -26,22 +26,14 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import kim.spider.metadata.Metadata;
 import kim.spider.parse.html.DOMBuilder;
 import kim.spider.parse.html.DOMContentUtils;
 import kim.spider.parse.html.HTMLMetaProcessor;
 import kim.spider.protocol.Content;
-import kim.spider.protocol.HttpHeaders;
 import kim.spider.util.EncodingDetector;
 import kim.spider.util.LogUtil;
 import kim.spider.util.SpiderConfiguration;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;

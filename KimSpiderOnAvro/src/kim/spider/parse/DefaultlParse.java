@@ -1,6 +1,8 @@
 package kim.spider.parse;
 
-import kim.spider.io.WritableList;
+import java.util.ArrayList;
+import java.util.List;
+
 import kim.spider.protocol.Content;
 
 import org.apache.commons.logging.Log;
@@ -13,9 +15,9 @@ public class DefaultlParse implements Parse
 {
 	public static final Log LOG = LogFactory.getLog(DefaultlParse.class);
 	
-	public WritableList parse(String url, Content content)
+	public List parse(String url, Content content)
 	{
-		return new WritableList();
+		return new ArrayList();
 		
 	}
 

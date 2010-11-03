@@ -66,8 +66,6 @@ public class Injector extends Configured implements Tool {
 	public static class InjectMapper extends
 			Mapper<WritableComparable, Text, String, kim.spider.schema.CrawlDatum> {
 
-		public final static String	PARSE_CLASS	= "parse_class";
-
 		private int									interval;
 		private float								scoreInjected;
 		private Configuration				jobConf;
@@ -104,7 +102,7 @@ public class Injector extends Configured implements Tool {
 					}
 					String metaname = splits[s].substring(0, indexEquals);
 					String metavalue = splits[s].substring(indexEquals + 1);
-					if (!metaname.equals(PARSE_CLASS)) {
+					if (!metaname.equals(CrawlDatum.PARSE_CLASS)) {
 						metaData.put(metaname, metavalue);
 					} else
 						extendData.put(metaname, metavalue);

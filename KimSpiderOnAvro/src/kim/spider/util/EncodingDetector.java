@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import kim.spider.metadata.Metadata;
 import kim.spider.protocol.Content;
 import kim.spider.protocol.Response;
 
@@ -373,7 +372,7 @@ public class EncodingDetector {
 
     // make a fake Content
     Content content =
-        new Content("",  data);
+        new Content("", data,null);
 
     detector.autoDetectClues(content, true);
     String encoding = detector.guessEncoding(content,
