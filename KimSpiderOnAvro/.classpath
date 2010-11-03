@@ -52,6 +52,8 @@
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/xmlenc-0.52.jar"/>
 	<classpathentry kind="lib" path="lib/nekohtml.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-0.21.0"/>
+	<classpathentry kind="lib" path="lib/hadoop-common-0.21.0.jar"/>
+	<classpathentry kind="lib" path="lib/hadoop-hdfs-0.21.0.jar"/>
+	<classpathentry kind="lib" path="lib/hadoop-mapred-0.21.0.jar"/>
 	<classpathentry kind="output" path="build/eclipse-classes"/>
 </classpath>
