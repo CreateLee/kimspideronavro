@@ -124,9 +124,6 @@ public class GeneratorSmart extends Configured implements Tool {
 			crawlDatum.setMeta(Spider.GENERATE_TIME_KEY, String.valueOf(genTime));
 			entry.datum = crawlDatum.datum;
 			entry.url = key;
-			/*
-			 * ��������ǰ�url����ģ��˴�ʹ����������ݽ��д��� Ӱ�������Reduce����е����򣬴ﵽ���վ��url���ȷֲ���Ŀ��
-			 */
 			context.write(RandomUtils.nextFloat(), entry);
 		}
 	}
@@ -134,7 +131,7 @@ public class GeneratorSmart extends Configured implements Tool {
 	public static class SelectorReducer extends
 			Reducer<Float, SelectorEntry, Float, SelectorEntry> {
 		private long																			count							= 0;
-		private long																			limit;									// ����segment��url���
+		private long																			limit;							
 		int																								currentsegmentnum	= 1;
 		//private AvroMultipleOutputs<Float, SelectorEntry>	mos;
 
@@ -346,7 +343,7 @@ public class GeneratorSmart extends Configured implements Tool {
 					continue;
 				// start a new partition job for this segment
 				Path newSeg = partitionSegment(fs, segments, subfetchlist, numLists);
-				// ��newSegĿ¼�����generatored��ʾ��ǰsegment������,fetch���Խ���ץȡ
+
 				fs.createNewFile(new Path(newSeg, "generatored"));
 				generatedSegments.add(newSeg);
 			}
