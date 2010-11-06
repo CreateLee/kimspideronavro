@@ -81,13 +81,11 @@ public class AvroPairRecordReader<K, V> extends RecordReader<K, V> {
 
 	@Override
 	public K getCurrentKey() throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
 		return key;
 	}
 
 	@Override
 	public V getCurrentValue() throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
 		return value;
 	}
 

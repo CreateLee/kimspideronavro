@@ -166,8 +166,8 @@ public class MultithreadedBlockMapper<K1, V1, K2, V2> extends Mapper<K1, V1, K2,
 				MapRunner thread = runners.get(i);
 				if (thread.isAlive()) {
 					if (thread.mapper.getBlockTime() > timeout) {
-						thread.interrupt();// ��ֹ��ǰ�߳�
-						thread.mapper.BlockRecord();// �����������
+						thread.interrupt();
+						thread.mapper.BlockRecord();
 						numblockthread ++;
 						break;
 					}

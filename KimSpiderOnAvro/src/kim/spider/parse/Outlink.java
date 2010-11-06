@@ -27,7 +27,6 @@ import org.apache.avro.util.Utf8;
 public class Outlink {
 	
 	public  kim.spider.schema.Outlink datum; 
-	// 赋予每个外链一个周期,默认1000分钟
 	public Outlink() {
 		datum = new kim.spider.schema.Outlink();
 	}

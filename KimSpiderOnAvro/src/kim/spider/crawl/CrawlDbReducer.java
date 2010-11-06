@@ -142,12 +142,11 @@ public class CrawlDbReducer extends Reducer<String, kim.spider.schema.CrawlDatum
 		}
 
 		switch (fetch.getStatus())
-		{ // 指定新的状态
-
-			case CrawlDatum.STATUS_FETCH_SUCCESS: // 抓取成功
+		{ 
+			case CrawlDatum.STATUS_FETCH_SUCCESS: 
 
 				result.setStatus(CrawlDatum.STATUS_DB_FETCHED);
-				//result.setNextFetchTime();// 指定下次抓取时间
+				//result.setNextFetchTime();
 				break;
 
 			case CrawlDatum.STATUS_FETCH_REDIR_TEMP:
@@ -158,7 +157,7 @@ public class CrawlDbReducer extends Reducer<String, kim.spider.schema.CrawlDatum
 				result.setStatus(CrawlDatum.STATUS_DB_REDIR_PERM);
 				//result.setNextFetchTime();
 				break;
-			case CrawlDatum.STATUS_FETCH_RETRY: // 临时错误
+			case CrawlDatum.STATUS_FETCH_RETRY:
 				if (fetch.getRetriesSinceFetch() < retryMax)
 				{
 					result.setStatus(CrawlDatum.STATUS_DB_UNFETCHED);
@@ -167,7 +166,7 @@ public class CrawlDbReducer extends Reducer<String, kim.spider.schema.CrawlDatum
 					result.setStatus(CrawlDatum.STATUS_DB_GONE);
 				}
 				break;
-			case CrawlDatum.STATUS_LINKED: // 新发现的链接
+			case CrawlDatum.STATUS_LINKED: 
 				if (old != null)
 				{ // if old exists
 					result.set(old); // use it
@@ -176,7 +175,7 @@ public class CrawlDbReducer extends Reducer<String, kim.spider.schema.CrawlDatum
 					result.setStatus(CrawlDatum.STATUS_DB_UNFETCHED);
 				}
 				break;
-			case CrawlDatum.STATUS_FETCH_GONE: // 永久错误
+			case CrawlDatum.STATUS_FETCH_GONE:
 				result.setStatus(CrawlDatum.STATUS_DB_GONE);
 				break;
 
@@ -184,8 +183,7 @@ public class CrawlDbReducer extends Reducer<String, kim.spider.schema.CrawlDatum
 				throw new RuntimeException("Unknown status: "
 						+ fetch.getStatus() + " " + key);
 		}
-
-		// 去调被genrate的时间
+ 
 		result.getMetaData().remove(Spider.GENERATE_TIME_KEY);
 		context.write(key, result.datum);
 	}
