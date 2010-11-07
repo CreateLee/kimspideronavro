@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.io.serializer.avro;
+package kim.spider.serializer.avro;
 
 import org.apache.avro.Schema;
 import org.apache.avro.io.DatumReader;
@@ -26,6 +26,7 @@ import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
+import org.apache.hadoop.io.serializer.avro.AvroSerialization;
 
 /**
  * Serialization for Avro Specific classes. This serialization is to be used 

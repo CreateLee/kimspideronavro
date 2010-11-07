@@ -284,7 +284,7 @@ public class GeneratorSmart extends Configured implements Tool {
 	public Path[] generate(Path dbDir, Path segments, int numLists, long curTime,
 			boolean force) throws IOException, InterruptedException,
 			ClassNotFoundException {
-		getConf().set("mapred.temp.dir", "d:/tmp");
+		//getConf().set("mapred.temp.dir", "d:/tmp");
 		Path tempDir = new Path(getConf().get("mapred.temp.dir", ".")
 				+ "/generate-temp-" + System.currentTimeMillis());
 

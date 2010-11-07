@@ -21,11 +21,11 @@ package kim.spider.avro.mapreduce;
 import java.io.IOException;
 
 import kim.spider.io.AvroKeyComparator;
+import kim.spider.serializer.avro.AvroReflectSerialization;
+import kim.spider.serializer.avro.AvroSpecificSerialization;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.serializer.WritableSerialization;
-import org.apache.hadoop.io.serializer.avro.AvroReflectSerialization;
-import org.apache.hadoop.io.serializer.avro.AvroSpecificSerialization;
 import org.apache.hadoop.mapreduce.Job;
 
 /** An {@link org.apache.hadoop.mapred.InputFormat} for sequence files. */

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.io.serializer.avro;
+package kim.spider.serializer.avro;
 
 import java.io.IOException;
 import java.io.InputStream;

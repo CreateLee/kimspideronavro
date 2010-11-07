@@ -16,10 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.io.serializer.avro;
+package kim.spider.serializer.avro;
 
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
+import org.apache.hadoop.io.serializer.avro.AvroReflectSerialization;
 
 /**
  * Tag interface for Avro 'reflect' serializable classes. Classes implementing 

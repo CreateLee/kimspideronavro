@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.io.serializer.avro;
+package kim.spider.serializer.avro;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +30,8 @@ import org.apache.avro.reflect.ReflectDatumReader;
 import org.apache.avro.reflect.ReflectDatumWriter;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
+import org.apache.hadoop.io.serializer.avro.AvroReflectSerializable;
+import org.apache.hadoop.io.serializer.avro.AvroSerialization;
 import org.mortbay.log.Log;
 
 /**
